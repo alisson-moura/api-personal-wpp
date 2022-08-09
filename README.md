@@ -1,10 +1,66 @@
-# Whatsapp-Bot
 
-This is a Bot that sends messages automatically to another person in Whatsapp.
+![Logo](https://tudoprawhats.com.br/wp-content/uploads/2021/08/bot-whatsapp.png)
 
-## Technologies:
-- This was made in NodeJS with the Puppeteer library.
 
-## How to use it:
-- After cloning the project, go to the terminal and write: npm install puppeteer (or yarn install puppeteer).
-- Change the variables named: contactName, amountOfMessages, and message to personalize your bot.
+# API WhatsApp Pessoal
+
+API criada com o intuito de fornecer uma forma de envio de mensagens automáticas com uma conta pessoal no WhatsApp.
+
+
+
+## Documentação da API
+
+#### Envia mensagem para um contato
+
+```http
+  POST /send
+```
+
+| Body   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `contact` | `string` | **Obrigatório**. O nome do contato/grupo salvo no WhatsApp. |
+| `message` | `string` | **Obrigatório**. Mensagem à ser enviada |
+
+#### Retorna o status da api
+
+```http
+  GET /status
+```
+
+
+
+## Rodando localmente
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/alisson-moura/api-wpp
+```
+
+Entre no diretório do projeto
+
+```bash
+  cd api-wpp
+```
+
+Instale as dependências
+
+```bash
+  npm install
+```
+
+Inicie o servidor
+
+```bash
+  npm start
+```
+
+
+## Stack utilizada
+**Back-end:** Node, Express, Puppeteer
+
+
+## Autores
+
+- [@Alisson Moura](https://www.github.com/alisson-moura)
+
