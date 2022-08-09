@@ -1,50 +1,29 @@
-const puppeteer = require("puppeteer");
+const express = require('express')
+const cors = require('cors')
+const WppBot = require('./bot')
 
-// Login Function Logic
-(async function main() {
-  try {
-    // Configures puppeteer
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
-    );
+const app = express()
+app.use(cors())
+const port = 3000
 
-    //Navigates to Whatsapp
-    await page.goto("https://web.whatsapp.com/");
+app.use(express.urlencoded({ extended: true, }));
+app.use(express.json());
+let wppBot
 
-    // //Searches person by title
-    await page.waitForSelector("._1MXsz");
-    await delay(5000);
+app.post('/send', async (req, res) => {
+    const { contact, message } = req.body
+    if (!contact || !message)
+        return res.status(400).json({ error: 'contact or message not provided' })
 
-    //Change to contact you want to send messages to
-    const contactName = "Caca";
-    await page.click(`span[title='${contactName}']`);
-    await page.waitForSelector("._3uMse");
-
-    //Finds the message bar and focuses on it
-    const editor = await page.$("div[data-tab='1']");
-    await editor.focus();
-
-    //Amount of messages you want to send
-    const amountOfMessages = 500;
-
-    //Loops through cycle of sending message
-    for (var i = 0; i < amountOfMessages; i++) {
-      await page.evaluate(() => {
-        const message = "Are you mad at me? :( ";
-        document.execCommand("insertText", false, message);
-      });
-      await page.click("span[data-testid='send']");
-      await delay(500);
+    const result = await wppBot.sendMessage(contact, message)
+    if (result) {
+        return res.status(500).json({ error: result.message })
     }
-  } catch (e) {
-    console.error("error mine", e);
-  }
-})();
+    return res.status(201).end()
+})
 
-function delay(time) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, time);
-  });
-}
+app.listen(port, async () => {
+    wppBot = new WppBot()
+    await wppBot.init()
+    await wppBot.login()
+})
