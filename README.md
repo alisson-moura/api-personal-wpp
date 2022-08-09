@@ -34,13 +34,13 @@ API criada com o intuito de fornecer uma forma de envio de mensagens automática
 Clone o projeto
 
 ```bash
-  git clone https://github.com/alisson-moura/api-wpp
+  git clone https://github.com/alisson-moura/api-personal-wpp
 ```
 
 Entre no diretório do projeto
 
 ```bash
-  cd api-wpp
+  cd api-personal-wpp
 ```
 
 Instale as dependências
