@@ -1,5 +1,7 @@
+const { userInfo } = require("os");
 const puppeteer = require("puppeteer");
 const QRCode = require('qrcode');
+const resolve = require('path').resolve;
 
 class WppBot {
   constructor() {
@@ -9,15 +11,19 @@ class WppBot {
 
   async init() {
     // Configures puppeteer
-    this.browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox'] });
+    const userDir = resolve(__dirname, 'user-data-dir')
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--no-sandbox'],
+      userDataDir: userDir
+    });
     this.page = await this.browser.newPage();
     this.page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+    // Navigates to Whatsapp
+    await this.page.goto("https://web.whatsapp.com/");
   }
   async login() {
     try {
-      // Navigates to Whatsapp
-      await this.page.goto("https://web.whatsapp.com/");
-
       // Get and generate Qr Code
       console.log('Read the qrcode with your smartphone to login')
       await this.page.waitForSelector('div[data-testid="qrcode"]')
@@ -53,6 +59,14 @@ class WppBot {
     } catch (error) {
       return error
     }
+  }
+
+  async checkStatus() {
+    await this.page.reload()
+    // Check if page app is open
+    return await this.page.waitForSelector('#side', { timeout: 20000 })
+      .then(() => 'online')
+      .catch(() => 'offline')
   }
 
   delay(time) {

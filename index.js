@@ -22,8 +22,18 @@ app.post('/send', async (req, res) => {
     return res.status(201).end()
 })
 
-app.listen(port, async () => {
+app.get('/status', async (req, res) => {
+    const status = await wppBot.checkStatus()
+    return res.json({
+        status,
+    })
+})
+
+async function startWppBot() {
     wppBot = new WppBot()
     await wppBot.init()
-    await wppBot.login()
-})
+    const status = await wppBot.checkStatus()
+    if (status == 'offline') await wppBot.login()
+}
+
+app.listen(port, async () => await startWppBot())
