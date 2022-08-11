@@ -13,7 +13,7 @@ class WppBot {
     // Configures puppeteer
     const userDir = resolve(__dirname, 'user-data-dir')
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox',
         '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'],
       userDataDir: userDir
