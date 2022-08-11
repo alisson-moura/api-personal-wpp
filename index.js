@@ -17,7 +17,7 @@ const allowHostsMiddleware = (req, res, next) => {
         ip = ip.substr(7)
 
     if (allowHosts.includes(ip))
-        next()
+        return next()
 
     return res.status(403).json({ message: 'Access denied: host not allowed' })
 }
