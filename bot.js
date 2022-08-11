@@ -40,6 +40,9 @@ class WppBot {
 
   async sendMessage(contact, message) {
     try {
+      // replace \n to shift+enter
+
+
       // Load contacts 
       await this.page.waitForSelector('div[data-tab="4"]');
       await this.delay(10); // delay to hide automatic behavior
@@ -52,7 +55,20 @@ class WppBot {
         throw new Error('Invalid contact')
       })
       await this.page.click(`span[title='${contact}']`);
-      await this.page.type(".p3_M1", message, { delay: 10 /* delay to hide automatic behavior */ })
+      
+      // Checks if the text contains line breaks
+      if (message.includes('\\n')) {
+        message = message.split('\\n')
+        for (const m of message) {
+          await this.page.type(".p3_M1", m, { delay: 10 /* delay to hide automatic behavior */ })
+          await this.page.keyboard.down('ShiftLeft')
+          await this.page.keyboard.press('Enter')
+        }
+      } else {
+        await this.page.type(".p3_M1", message, { delay: 10 /* delay to hide automatic behavior */ })
+      }
+
+
       await this.page.waitForSelector('span[data-testid="send"]')
       await this.page.click('span[data-testid="send"]')
       await this.delay(10); // delay to hide automatic behavior
