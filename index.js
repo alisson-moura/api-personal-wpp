@@ -34,4 +34,7 @@ async function startWppBot() {
     if (status == 'offline') await wppBot.login()
 }
 
-app.listen(port, 'localhost', async () => await startWppBot())
+app.listen(port, 'localhost', async () => {
+    await startWppBot()
+    console.log('API running on port: 3000')
+})
