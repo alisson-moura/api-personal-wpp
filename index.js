@@ -3,12 +3,21 @@ const WppBot = require('./bot')
 
 const app = express()
 const port = 3000
+let wppBot
 
 app.use(express.urlencoded({ extended: true, }));
 app.use(express.json());
-let wppBot
 
-app.post('/send', async (req, res) => {
+// array with ips allowed to use api
+const allowHosts = []
+const allowHostsMiddleware = (req, res, next) => {
+    if (allowHosts.includes(req.ip)) {
+        next()
+    }
+    return res.status(403).json({ message: 'Access denied: host not allowed' })
+}
+
+app.post('/send', allowHostsMiddleware, async (req, res) => {
     const { contact, message } = req.body
     if (!contact || !message)
         return res.status(400).json({ error: 'contact or message not provided' })
@@ -20,7 +29,7 @@ app.post('/send', async (req, res) => {
     return res.status(201).end()
 })
 
-app.get('/status', async (req, res) => {
+app.get('/status', allowHostsMiddleware, async (req, res) => {
     const status = await wppBot.checkStatus()
     return res.json({
         status,
@@ -34,7 +43,7 @@ async function startWppBot() {
     if (status == 'offline') await wppBot.login()
 }
 
-app.listen(port, 'localhost', async () => {
+app.listen(port, async () => {
     await startWppBot()
     console.log('API running on port: 3000')
 })
