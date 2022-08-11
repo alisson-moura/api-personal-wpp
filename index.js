@@ -11,9 +11,14 @@ app.use(express.json());
 // array with ips allowed to use api
 const allowHosts = []
 const allowHostsMiddleware = (req, res, next) => {
-    if (allowHosts.includes(req.ip)) {
+    let ip = req.ip
+
+    if (ip.substr(0, 7) == '::ffff:')
+        ip = ip.substr(7)
+
+    if (allowHosts.includes(ip))
         next()
-    }
+
     return res.status(403).json({ message: 'Access denied: host not allowed' })
 }
 
