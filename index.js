@@ -1,9 +1,7 @@
 const express = require('express')
-const cors = require('cors')
 const WppBot = require('./bot')
 
 const app = express()
-app.use(cors())
 const port = 3000
 
 app.use(express.urlencoded({ extended: true, }));
@@ -36,4 +34,4 @@ async function startWppBot() {
     if (status == 'offline') await wppBot.login()
 }
 
-app.listen(port, async () => await startWppBot())
+app.listen(port, 'localhost', async () => await startWppBot())
