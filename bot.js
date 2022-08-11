@@ -13,8 +13,9 @@ class WppBot {
     // Configures puppeteer
     const userDir = resolve(__dirname, 'user-data-dir')
     this.browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox'],
+      headless: false,
+      args: ['--no-sandbox',
+        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'],
       userDataDir: userDir
     });
     this.page = await this.browser.newPage();
@@ -55,7 +56,7 @@ class WppBot {
         throw new Error('Invalid contact')
       })
       await this.page.click(`span[title='${contact}']`);
-      
+
       // Checks if the text contains line breaks
       if (message.includes('\\n')) {
         message = message.split('\\n')
