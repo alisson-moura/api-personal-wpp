@@ -1,4 +1,3 @@
-const { userInfo } = require("os");
 const puppeteer = require("puppeteer");
 const QRCode = require('qrcode');
 const resolve = require('path').resolve;
@@ -23,6 +22,9 @@ class WppBot {
     // Navigates to Whatsapp
     await this.page.goto("https://web.whatsapp.com/");
   }
+  async stop() {
+    await this.browser.close()
+  }
   async login() {
     try {
       // Get and generate Qr Code
@@ -41,15 +43,13 @@ class WppBot {
 
   async sendMessage(contact, message) {
     try {
-      // replace \n to shift+enter
-
-
       // Load contacts 
       await this.page.waitForSelector('div[data-tab="4"]');
-      await this.delay(10); // delay to hide automatic behavior
+      await this.delay(500); // delay to hide automatic behavior
 
       // Change to contact you want to send messages to
-      await this.page.type('div[data-testid="chat-list-search"]', contact, { delay: 10 })
+      await this.page.waitForSelector('div[data-testid="chat-list-search"]', {timeout: 2000});
+      await this.page.type('div[data-testid="chat-list-search"]', contact, { delay: 300 })
       await this.page.waitForSelector(`span[title="${contact}"]`, { timeout: 2000 }).catch(async () => {
         await this.page.waitForSelector('span[data-testid="x-alt"]')
         await this.page.click('span[data-testid="x-alt"]')
@@ -93,4 +93,4 @@ class WppBot {
   }
 }
 
-module.exports = WppBot
+module.exports = new WppBot()
